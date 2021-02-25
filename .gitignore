@@ -1,0 +1,7 @@
+# Ignore binary files - DO NOT CHANGE THE ORDER OF THESE STATEMENTS
+*
+!*.*
+!*/
+
+# Please add all ignore conditions from here
+cmd
