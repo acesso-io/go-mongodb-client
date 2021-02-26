@@ -31,7 +31,7 @@ if err := client.Connect(); err != nil {
 ```
 
 ### Creating queries and aggregation pipelines:
-go-mongodb-client has in-built query and aggregation pipelines builders.
+go-mongodb-client has built-in query and aggregation pipelines builders. You can use them to create aggregation stages or simple bson.M blocks:
 
 ```
 // Use "my_database" as the target database
