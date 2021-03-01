@@ -1,8 +1,6 @@
-package mongodb
+package mango
 
-import (
-	"go.mongodb.org/mongo-driver/bson"
-)
+import "go.mongodb.org/mongo-driver/bson"
 
 // Query is a MongoDB query builder. New Queries should be created via NewQuery function.
 type Query struct {

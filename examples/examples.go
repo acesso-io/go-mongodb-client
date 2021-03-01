@@ -6,15 +6,15 @@ import (
 	"log"
 	"time"
 
-	"go-mongodb-client/pkg/lib/mongodb"
-	"go-mongodb-client/pkg/lib/mongodb/uuid"
+	"mango/pkg/lib/mango"
+	"mango/pkg/lib/mango/uuid"
 
 	"github.com/pkg/errors"
 )
 
 func main() {
-	client := mongodb.NewClient(
-		mongodb.NewOptionsFromConfigFile("config.yaml"),
+	client := mango.NewClient(
+		mango.NewOptionsFromConfigFile("config.yaml"),
 	)
 
 	if err := client.Connect(); err != nil {
@@ -24,10 +24,10 @@ func main() {
 	db := client.Database("my_database")
 
 	// Build new aggregation pipeline
-	aggregation := mongodb.NewAggregation()
+	aggregation := mango.NewAggregation()
 
 	// Start new query builder
-	q1 := mongodb.NewQuery()
+	q1 := mango.NewQuery()
 	q1.Equal("_id", uuid.Must(uuid.Parse("548c8a3b-2906-4693-a601-98dcf8225a25")))
 	q1.In("meta.generation", 1, 2, 3)
 

@@ -1,24 +1,24 @@
-# go-mongodb-client
-A MongoDB client written in Golang
+# mango
+Mango is a wrapper for MongoDB's official driver created to simplify the configuration of clients and construction of queries and aggregation pipelines.
 
 ## Usage
 
 ### Creating a new client:
-go-mongodb-client's Client is a simple wrapper for MongoDB's official driver Client which allows the customization of options.
+Mango's Client is a simple wrapper for MongoDB's official driver Client which allows the customization of options.
 
-mongodb.NewClient accepts as a parameter a mongodb.Options struct. The data in this struct is used to modify you Client as you need. If **nil** is passed as the parameter, mongodb.DefaultOptions will be used instead.
+mango.NewClient accepts as a parameter a mango.Options struct. The data in this struct is used to modify you Client as you need. If **nil** is passed as the parameter, mango.DefaultOptions will be used instead.
 
 ```
 // Create client with DefaultOptions
-client := mongodb.NewClient(nil)
+client := mango.NewClient(nil)
 ```
 
-mongodb.Options can also be read directly from a YAML config file. In this case, all you need to do is prepare a config file and call mongodb.NewOptionsFromConfigFile, passing the file path as its parameter:
+mango.Options can also be read directly from a YAML config file. In this case, all you need to do is prepare a config file and call mango.NewOptionsFromConfigFile, passing the file path as its parameter:
 
 ```
 // Create client with customized options from a YAML file
-client := mongodb.NewClient(
-	mongodb.NewOptionsFromConfigFile("config.yaml"),
+client := mango.NewClient(
+	mango.NewOptionsFromConfigFile("config.yaml"),
 )
 ```
 
@@ -31,14 +31,14 @@ if err := client.Connect(); err != nil {
 ```
 
 ### Creating queries and aggregation pipelines:
-go-mongodb-client has built-in query and aggregation pipelines builders. You can use them to create aggregation stages or simple bson.M blocks:
+Mango has built-in query and aggregation pipelines builders. You can use them to create aggregation stages or simple bson.M blocks:
 
 ```
 // Use "my_database" as the target database
 db := client.Database("my_database")
 
 // Initiate new query builder
-query := mongodb.NewQuery()
+query := mango.NewQuery()
 query.Equal("_id", uuid.Must(uuid.Parse("548c8a3b-2906-4693-a601-98dcf8225a25")))
 query.In("generation", 1, 2, 3)
 query.LessThan("timestamp", time.Now().Add(-30*24*time.Hour))
@@ -50,7 +50,7 @@ if err != nil {
 }
 
 // Initiate new aggregation builder
-aggregation := mongodb.NewAggregation()
+aggregation := mango.NewAggregation()
 
 // Use the query built on a $match stage
 aggregation.Match(query)
