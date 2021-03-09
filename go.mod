@@ -1,4 +1,4 @@
-module mango
+module github.com/acesso-io/mango
 
 go 1.14
 

@@ -6,8 +6,8 @@ import (
 	"log"
 	"time"
 
-	"mango/pkg/lib/mango"
-	"mango/pkg/lib/mango/uuid"
+	"github.com/acesso-io/mango/pkg/lib/mango"
+	"github.com/acesso-io/mango/pkg/lib/mango/uuid"
 
 	"github.com/pkg/errors"
 )
