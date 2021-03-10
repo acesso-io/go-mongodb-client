@@ -4,14 +4,12 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
-	"fmt"
-	"io/ioutil"
 	"log"
 
+	"github.com/acesso-io/mango/pkg/lib/utils"
 	"github.com/pkg/errors"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"gopkg.in/yaml.v2"
 )
 
 // Client extends MongoDB's client
@@ -87,20 +85,16 @@ var DefaultOptions = Options{
 	URI: "mongodb://localhost:27017/",
 }
 
-// NewOptionsFromConfigFile reads Options from a YAML config file on a given path
-func NewOptionsFromConfigFile(path string) *Options {
-	b, err := ioutil.ReadFile(path)
+// NewOptionsFromFile reads Options from a config file on a given path
+func NewOptionsFromFile(path string) (*Options, error) {
+	var opts Options
+
+	err := utils.ReadDataFromFile(path, &opts)
 	if err != nil {
-		log.Fatal(errors.Wrap(err, fmt.Sprintf("failed to read config file at path %s", path)))
+		return nil, err
 	}
 
-	opts := new(Options)
-
-	if err := yaml.Unmarshal(b, opts); err != nil {
-		log.Fatal(errors.Wrap(err, "failed to unmarshal config file data"))
-	}
-
-	return opts
+	return &opts, nil
 }
 
 // clientOptions transforms Options into an array of ClientOptions for MongoDB's official library

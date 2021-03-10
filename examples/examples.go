@@ -13,9 +13,12 @@ import (
 )
 
 func main() {
-	client := mango.NewClient(
-		mango.NewOptionsFromConfigFile("config.yaml"),
-	)
+	opts, err := mango.NewOptionsFromFile("options.yaml")
+	if err != nil {
+		log.Fatal(errors.Wrap(err, "failed to read options from file"))
+	}
+
+	client := mango.NewClient(opts)
 
 	if err := client.Connect(); err != nil {
 		log.Fatal(errors.Wrap(err, "failed to connect to MongoDB"))
