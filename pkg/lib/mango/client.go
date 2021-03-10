@@ -141,9 +141,9 @@ func (o *Options) clientOptions() []*options.ClientOptions {
 }
 
 // Operation is a Client operation
-type Operation func(c *Client) error
+type Operation func(ctx context.Context, c *Client) error
 
 // Run runs a given operation
-func (c *Client) Run(op Operation) error {
-	return op(c)
+func (c *Client) Run(ctx context.Context, op Operation) error {
+	return op(ctx, c)
 }
