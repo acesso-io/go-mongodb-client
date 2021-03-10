@@ -7,9 +7,9 @@ import (
 
 // Database extends mongo.Database
 type Database struct {
-	Type        string
-	Name        string
-	Collections []Collection
+	Type        string       `json:"type" bson:"type"`
+	Name        string       `json:"name" bson:"name"`
+	Collections []Collection `json:"collections" bson:"collections"`
 
 	*mongo.Database
 }
