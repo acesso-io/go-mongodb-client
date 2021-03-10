@@ -139,3 +139,11 @@ func (o *Options) clientOptions() []*options.ClientOptions {
 
 	return clientOptions
 }
+
+// Operation is a Client operation
+type Operation func(c *Client) error
+
+// Run runs a given operation
+func (c *Client) Run(op Operation) error {
+	return op(c)
+}
