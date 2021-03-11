@@ -5,8 +5,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-// Blueprint represents a MongoDB databases structure
-type Blueprint struct {
+// Environment represents a MongoDB databases environment
+type Environment struct {
 	Databases []Database
 }
 
@@ -24,24 +24,46 @@ type Collection struct {
 	Indexes []mongo.IndexModel `json:"indexes" bson:"indexes"`
 }
 
-// ReadFromFile creates a new Blueprint from a given file
-func ReadFromFile(path string) (*Blueprint, error) {
-	var blueprint Blueprint
+// NewEnvironmentFromFile creates a new Environment from a given file
+func NewEnvironmentFromFile(path string) (*Environment, error) {
+	var environment Environment
 
-	if err := utils.ReadDataFromFile(path, &blueprint); err != nil {
+	if err := utils.ReadDataFromFile(path, &environment); err != nil {
 		return nil, err
 	}
 
-	return &blueprint, nil
+	return &environment, nil
 }
 
-// ReadFromBytes creates a new Blueprint from a byte array
-func ReadFromBytes(b []byte) (*Blueprint, error) {
-	var blueprint Blueprint
+// NewEnvironmentFromBytes creates a new Environment from a byte array
+func NewEnvironmentFromBytes(b []byte) (*Environment, error) {
+	var environment Environment
 
-	if err := utils.ReadDataFromBytes(b, &blueprint); err != nil {
+	if err := utils.ReadDataFromBytes(b, &environment); err != nil {
 		return nil, err
 	}
 
-	return &blueprint, nil
+	return &environment, nil
+}
+
+// NewDatabaseFromFile creates a new Database blueprint from a given file
+func NewDatabaseFromFile(path string) (*Database, error) {
+	var database Database
+
+	if err := utils.ReadDataFromFile(path, &database); err != nil {
+		return nil, err
+	}
+
+	return &database, nil
+}
+
+// NewDatabaseFromBytes creates a new Database blueprint from a byte array
+func NewDatabaseFromBytes(b []byte) (*Database, error) {
+	var database Database
+
+	if err := utils.ReadDataFromBytes(b, &database); err != nil {
+		return nil, err
+	}
+
+	return &database, nil
 }
