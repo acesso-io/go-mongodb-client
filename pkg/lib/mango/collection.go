@@ -8,8 +8,9 @@ import (
 
 // Collection extends mongo.Collection
 type Collection struct {
-	Type string `json:"type" bson:"type"`
-	Name string `json:"name" bson:"name"`
+	Type    string             `json:"type" bson:"type"`
+	Name    string             `json:"name" bson:"name"`
+	Indexes []mongo.IndexModel `json:"indexes" bson:"indexes"`
 
 	*mongo.Collection
 }
