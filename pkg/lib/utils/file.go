@@ -4,9 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
-	"path/filepath"
 
+	"github.com/gabriel-vasile/mimetype"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v3"
 )
@@ -19,16 +18,28 @@ func (fn UnmarshallingFunc) Unmarshal(data []byte, v interface{}) error {
 	return fn(data, v)
 }
 
-// ReadDataFromFile reads data from a given JSON file, given a file path and a struct to the data read be decoded on.
+// ReadDataFromFile reads data from a file in a path and decodes it into a given data struct. The struct passed must be
+// a pointer.
 func ReadDataFromFile(path string, data interface{}) error {
 	b, err := ioutil.ReadFile(path)
 	if err != nil {
-		log.Fatal(errors.Wrap(err, fmt.Sprintf("failed to read config file at path %s", path)))
+		return err
 	}
 
-	extension := filepath.Ext(path)
+	err = ReadDataFromBytes(b, data)
+	if err != nil {
+		return err
+	}
 
+	return nil
+}
+
+// ReadDataFromBytes reads data from a byte array and decodes it into a given data struct. The struct passed must be
+// a pointer.
+func ReadDataFromBytes(b []byte, data interface{}) error {
 	var fn UnmarshallingFunc
+
+	extension := mimetype.Detect(b).Extension()
 
 	switch extension {
 	case ".json":
@@ -40,7 +51,7 @@ func ReadDataFromFile(path string, data interface{}) error {
 	}
 
 	if err := fn.Unmarshal(b, &data); err != nil {
-		log.Fatal(errors.Wrap(err, "failed to unmarshal data"))
+		return err
 	}
 
 	return nil
