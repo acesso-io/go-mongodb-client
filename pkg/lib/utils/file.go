@@ -40,7 +40,7 @@ func ReadDataFromFile(path string, data interface{}) error {
 		return errors.Wrap(ErrCannotReadFileExtension, fmt.Sprintf("failed to unmarshal %s file", extension))
 	}
 
-	if err := fn.Unmarshal(b, &data); err != nil {
+	if err := fn.Unmarshal(b, data); err != nil {
 		log.Fatal(errors.Wrap(err, "failed to unmarshal data"))
 	}
 
@@ -63,7 +63,7 @@ func ReadDataFromBytes(b []byte, data interface{}) error {
 		return errors.Wrap(ErrCannotReadFileExtension, fmt.Sprintf("failed to unmarshal %s file", extension))
 	}
 
-	if err := fn.Unmarshal(b, &data); err != nil {
+	if err := fn.Unmarshal(b, data); err != nil {
 		log.Fatal(errors.Wrap(err, "failed to unmarshal data"))
 	}
 
