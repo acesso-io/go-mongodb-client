@@ -12,14 +12,12 @@ type Environment struct {
 
 // Database is a MongoDB database blueprint
 type Database struct {
-	Type        string       `json:"type" bson:"type"`
 	Name        string       `json:"name" bson:"name"`
 	Collections []Collection `json:"collections" bson:"collections"`
 }
 
 // Collection is a MongoDB collection blueprint
 type Collection struct {
-	Type    string             `json:"type" bson:"type"`
 	Name    string             `json:"name" bson:"name"`
 	Indexes []mongo.IndexModel `json:"indexes" bson:"indexes"`
 }
