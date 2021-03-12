@@ -5,6 +5,8 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"log"
+	"os"
+	"strings"
 
 	"github.com/acesso-io/mango/pkg/lib/utils"
 	"github.com/pkg/errors"
@@ -73,11 +75,13 @@ func (c *Client) isConnected() bool {
 
 // Options are options for the MongoDB Client
 type Options struct {
-	URI          string `yaml:"uri"`
-	ClientPEM    string `yaml:"client_pem"`
-	ClientKeyPEM string `yaml:"client_key_pem"`
-	CA           string `yaml:"ca"`
-	AuthX509     bool   `yaml:"auth_x509"`
+	URI          string `json:"uri" yaml:"uri"`
+	ClientPEM    string `json:"client_pem" yaml:"client_pem"`
+	ClientKeyPEM string `json:"client_key_pem" yaml:"client_key_pem"`
+	CA           string `json:"ca" yaml:"ca"`
+	Auth         struct {
+		Kind string `json:"kind" yaml:"kind"`
+	} `json:"auth" yaml:"auth"`
 }
 
 // DefaultOptions are the default options for a MongoDB client
@@ -105,39 +109,50 @@ func (o *Options) clientOptions() []*options.ClientOptions {
 		clientOptions = append(clientOptions, options.Client().ApplyURI(o.URI))
 	}
 
-	var useTLS bool
-
 	if "" != o.CA && "" != o.ClientPEM && "" != o.ClientKeyPEM {
-		useTLS = true
+		clientOptions = append(clientOptions, o.getTLSClientOption())
 	}
 
-	if useTLS {
-		pool := x509.NewCertPool()
-		pool.AppendCertsFromPEM([]byte(o.CA))
-
-		keyPair, err := tls.X509KeyPair([]byte(o.ClientPEM), []byte(o.ClientKeyPEM))
-		if nil != err {
-			log.Fatal(err)
-		}
-
-		clientOptions = append(clientOptions, options.Client().SetTLSConfig(
-			&tls.Config{
-				RootCAs:      pool,
-				Certificates: []tls.Certificate{keyPair},
-			},
-		))
-	}
-
-	if o.AuthX509 {
+	switch strings.ToLower(o.Auth.Kind) {
+	case "x509":
 		clientOptions = append(clientOptions, options.Client().SetAuth(
 			options.Credential{
 				AuthMechanism: "MONGODB-X509",
 				AuthSource:    "$extra",
 			},
 		))
+	case "basic":
+		clientOptions = append(clientOptions, options.Client().SetAuth(
+			options.Credential{
+				Username: os.Getenv("BASIC_AUTH_USERNAME"),
+				Password: os.Getenv("BASIC_AUTH_PASSWORD"),
+			},
+		))
 	}
 
 	return clientOptions
+}
+
+// getTLSClientOption returns a options.ClientOptions from
+func (o *Options) getTLSClientOption() *options.ClientOptions {
+	if o.CA == "" || o.ClientPEM == "" || o.ClientKeyPEM == "" {
+		return nil
+	}
+
+	pool := x509.NewCertPool()
+	pool.AppendCertsFromPEM([]byte(o.CA))
+
+	keyPair, err := tls.X509KeyPair([]byte(o.ClientPEM), []byte(o.ClientKeyPEM))
+	if nil != err {
+		log.Fatal(err)
+	}
+
+	return options.Client().SetTLSConfig(
+		&tls.Config{
+			RootCAs:      pool,
+			Certificates: []tls.Certificate{keyPair},
+		},
+	)
 }
 
 // Operation is a Client operation

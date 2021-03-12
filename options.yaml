@@ -1,5 +1,6 @@
 uri: "mongodb://localhost:27017/"
-client_pem: ""
-client_key_pem: ""
-ca: ""
-auth_x509: false
+# client_pem: ""
+# client_key_pem: ""
+# ca: ""
+# auth:
+#   kind: "basic"
